@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <cstdio>
+#include <unordered_map>
 
 struct Shader
 {
@@ -143,45 +144,53 @@ struct Shader
 		glUseProgram(this->handle);
 	}
 	
+	inline int32_t getUniformHandle(std::string const &location)
+	{
+		auto it = this->uniforms.find(location);
+		if(it == this->uniforms.end()) it = this->uniforms.emplace(location, glGetUniformLocation(this->handle, location.data())).first;
+		return it->second;
+	}
+	
 	inline void sendFloat(std::string const &location, float val)
 	{
-		glUniform1f(glGetUniformLocation(this->handle, location.data()), val);
+		glUniform1f(this->getUniformHandle(location), val);
 	}
 	
 	inline void sendInt(std::string const &location, int32_t val)
 	{
-		glUniform1i(glGetUniformLocation(this->handle, location.data()), val);
+		glUniform1i(this->getUniformHandle(location), val);
 	}
 	
 	inline void sendUInt(std::string const &location, uint32_t val)
 	{
-		glUniform1ui(glGetUniformLocation(this->handle, location.data()), val);
+		glUniform1ui(this->getUniformHandle(location), val);
 	}
 	
 	inline void sendVec2f(std::string const &location, float* val)
 	{
-		glUniform2fv(glGetUniformLocation(this->handle, location.data()), 1, val);
+		glUniform2fv(this->getUniformHandle(location), 1, val);
 	}
 	
 	inline void sendVec3f(std::string const &location, float* val)
 	{
-		glUniform3fv(glGetUniformLocation(this->handle, location.data()), 1, val);
+		glUniform3fv(this->getUniformHandle(location), 1, val);
 	}
 	
 	inline void sendVec4f(std::string const &location, float* val)
 	{
-		glUniform4fv(glGetUniformLocation(this->handle, location.data()), 1, val);
+		glUniform4fv(this->getUniformHandle(location), 1, val);
 	}
 	
 	inline void sendMat3f(std::string const &location, float* val)
 	{
-		glUniformMatrix3fv(glGetUniformLocation(this->handle, location.data()), 1, GL_FALSE, val);
+		glUniformMatrix3fv(this->getUniformHandle(location), 1, GL_FALSE, val);
 	}
 	
 	inline void sendMat4f(std::string const &location, float* val)
 	{
-		glUniformMatrix4fv(glGetUniformLocation(this->handle, location.data()), 1, GL_FALSE, val);
+		glUniformMatrix4fv(this->getUniformHandle(location), 1, GL_FALSE, val);
 	}
 	
 	uint32_t handle = 0;
+	std::unordered_map<std::string, int32_t> uniforms;
 };
