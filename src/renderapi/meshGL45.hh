@@ -22,7 +22,7 @@ struct Mesh //TODO support index buffer
 		if(!verts.empty())
 		{
 			this->hasVerts = true;
-			this->numVerts = verts.size();
+			this->numVerts = verts.size() / 3;
 		}
 		glCreateVertexArrays(1, &this->vao);
 		glCreateBuffers(1, &this->vboV);
@@ -39,7 +39,7 @@ struct Mesh //TODO support index buffer
 		if(!verts.empty())
 		{
 			this->hasVerts = true;
-			this->numVerts = verts.size();
+			this->numVerts = verts.size() / 3;
 		}
 		if(!uvs.empty()) this->hasUVs = true;
 		glCreateVertexArrays(1, &this->vao);
@@ -64,7 +64,7 @@ struct Mesh //TODO support index buffer
 		if(!verts.empty())
 		{
 			this->hasVerts = true;
-			this->numVerts = verts.size();
+			this->numVerts = verts.size() / 3;
 		}
 		if(!uvs.empty()) this->hasUVs = true;
 		if(!normals.empty()) this->hasNormals = true;
