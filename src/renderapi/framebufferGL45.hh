@@ -1,17 +1,21 @@
 #pragma once
 
-#include "enums.hh"
-
 #include <cstdint>
 #include <initializer_list>
 #include <vector>
 #include <cstdio>
+#include <string>
 
-struct FramebufferGL45
+enum struct Attachment
 {
-	FramebufferGL45() = delete;
+	Color, Alpha, Depth, Stencil,
+};
+
+struct Framebuffer
+{
+	Framebuffer() = delete;
 	
-	inline FramebufferGL45(uint32_t width, uint32_t height, std::initializer_list<AttachmentType> const &options, std::string const &name)
+	inline Framebuffer(uint32_t width, uint32_t height, std::initializer_list<Attachment> const &options, std::string const &name)
 	{
 		this->width = width;
 		this->height = height;
@@ -19,10 +23,10 @@ struct FramebufferGL45
 		{
 			switch(option)
 			{
-				case AttachmentType::Color: this->hasColor = true; break;
-				case AttachmentType::Alpha: this->hasAlpha = true; break;
-				case AttachmentType::Depth: this->hasDepth = true; break;
-				case AttachmentType::Stencil: this->hasStencil = true; break;
+				case Attachment::Color: this->hasColor = true; break;
+				case Attachment::Alpha: this->hasAlpha = true; break;
+				case Attachment::Depth: this->hasDepth = true; break;
+				case Attachment::Stencil: this->hasStencil = true; break;
 				default: break;
 			}
 		}
@@ -30,13 +34,13 @@ struct FramebufferGL45
 		createFBO(*this);
 	}
 	
-	inline ~FramebufferGL45()
+	inline ~Framebuffer()
 	{
 		clearFBO(*this);
 	}
 	
 	//copy
-	inline FramebufferGL45(FramebufferGL45 &other)
+	inline Framebuffer(Framebuffer &other)
 	{
 		this->handle = other.handle;
 		other.handle = 0;
@@ -51,7 +55,7 @@ struct FramebufferGL45
 		other.stencilHandle = 0;
 	}
 	
-	inline FramebufferGL45& operator=(FramebufferGL45 other)
+	inline Framebuffer& operator=(Framebuffer other)
 	{
 		this->handle = other.handle;
 		other.handle = 0;
@@ -68,7 +72,7 @@ struct FramebufferGL45
 	}
 	
 	//move
-	FramebufferGL45(FramebufferGL45 &&other) noexcept
+	Framebuffer(Framebuffer &&other) noexcept
 	{
 		this->handle = other.handle;
 		other.handle = 0;
@@ -83,7 +87,7 @@ struct FramebufferGL45
 		other.stencilHandle = 0;
 	}
 	
-	FramebufferGL45& operator=(FramebufferGL45 &&other) noexcept
+	Framebuffer& operator=(Framebuffer &&other) noexcept
 	{
 		this->handle = other.handle;
 		other.handle = 0;
@@ -104,13 +108,13 @@ struct FramebufferGL45
 		glBindFramebuffer(GL_FRAMEBUFFER, this->handle);
 	}
 	
-	inline void bind(AttachmentType type, uint32_t target)
+	inline void bind(Attachment type, uint32_t target)
 	{
 		switch(type)
 		{
-			case AttachmentType::Color: glBindTextureUnit(target, this->colorHandle); break;
-			case AttachmentType::Depth: glBindTextureUnit(target, this->depthHandle); break;
-			case AttachmentType::Stencil: glBindTextureUnit(target, this->stencilHandle); break;
+			case Attachment::Color: glBindTextureUnit(target, this->colorHandle); break;
+			case Attachment::Depth: glBindTextureUnit(target, this->depthHandle); break;
+			case Attachment::Stencil: glBindTextureUnit(target, this->stencilHandle); break;
 			default: break;
 		}
 	}
@@ -128,7 +132,7 @@ struct FramebufferGL45
 	std::string name = "";
 
 private:
-	inline void createFBO(FramebufferGL45 &fbo)
+	inline void createFBO(Framebuffer &fbo)
 	{
 		glCreateFramebuffers(1, &fbo.handle);
 		fbo.use();
@@ -163,7 +167,7 @@ private:
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 	
-	inline void clearFBO(FramebufferGL45 &fbo)
+	inline void clearFBO(Framebuffer &fbo)
 	{
 		glDeleteFramebuffers(1, &fbo.handle);
 		glDeleteTextures(1, &fbo.colorHandle);

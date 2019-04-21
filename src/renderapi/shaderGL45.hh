@@ -4,11 +4,11 @@
 #include <string>
 #include <cstdio>
 
-struct ShaderGL45
+struct Shader
 {
-	ShaderGL45() = delete;
+	Shader() = delete;
 	
-	inline ShaderGL45(std::string const &vertShader, std::string const &fragShader)
+	inline Shader(std::string const &vertShader, std::string const &fragShader)
 	{
 		uint32_t vertHandle = glCreateShader(GL_VERTEX_SHADER), fragHandle = glCreateShader(GL_FRAGMENT_SHADER);
 		this->handle = glCreateProgram();
@@ -65,7 +65,7 @@ struct ShaderGL45
 		glDeleteShader(fragHandle);
 	}
 	
-	inline explicit ShaderGL45(std::string const &compShader)
+	inline explicit Shader(std::string const &compShader)
 	{
 		uint32_t compHandle = glCreateShader(GL_COMPUTE_SHADER);
 		this->handle = glCreateProgram();
@@ -105,19 +105,19 @@ struct ShaderGL45
 		glDeleteShader(compHandle);
 	}
 	
-	inline ~ShaderGL45()
+	inline ~Shader()
 	{
 		glDeleteProgram(this->handle);
 	}
 	
 	//copy
-	inline ShaderGL45(ShaderGL45 &other)
+	inline Shader(Shader &other)
 	{
 		this->handle = other.handle;
 		other.handle = 0;
 	}
 	
-	inline ShaderGL45& operator=(ShaderGL45 other)
+	inline Shader& operator=(Shader other)
 	{
 		this->handle = other.handle;
 		other.handle = 0;
@@ -125,13 +125,13 @@ struct ShaderGL45
 	}
 	
 	//move
-	inline ShaderGL45(ShaderGL45 &&other) noexcept
+	inline Shader(Shader &&other) noexcept
 	{
 		this->handle = other.handle;
 		other.handle = 0;
 	}
 	
-	inline ShaderGL45& operator=(ShaderGL45 &&other) noexcept
+	inline Shader& operator=(Shader &&other) noexcept
 	{
 		this->handle = other.handle;
 		other.handle = 0;
