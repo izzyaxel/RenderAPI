@@ -160,27 +160,27 @@ struct Shader
 	
 	inline void sendVec2f(std::string const &location, float* val)
 	{
-		glUniform2fv(glGetUniformLocation(this->handle, location.data()), 2, val);
+		glUniform2fv(glGetUniformLocation(this->handle, location.data()), 1, val);
 	}
 	
 	inline void sendVec3f(std::string const &location, float* val)
 	{
-		glUniform3fv(glGetUniformLocation(this->handle, location.data()), 3, val);
+		glUniform3fv(glGetUniformLocation(this->handle, location.data()), 1, val);
 	}
 	
 	inline void sendVec4f(std::string const &location, float* val)
 	{
-		glUniform4fv(glGetUniformLocation(this->handle, location.data()), 4, val);
+		glUniform4fv(glGetUniformLocation(this->handle, location.data()), 1, val);
 	}
 	
 	inline void sendMat3f(std::string const &location, float* val)
 	{
-		glUniformMatrix3fv(glGetUniformLocation(this->handle, location.data()), 9, GL_FALSE, val);
+		glUniformMatrix3fv(glGetUniformLocation(this->handle, location.data()), 1, GL_FALSE, val);
 	}
 	
 	inline void sendMat4f(std::string const &location, float* val)
 	{
-		glUniformMatrix4fv(glGetUniformLocation(this->handle, location.data()), 16, GL_FALSE, val);
+		glUniformMatrix4fv(glGetUniformLocation(this->handle, location.data()), 1, GL_FALSE, val);
 	}
 	
 	uint32_t handle = 0;
