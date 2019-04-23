@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstdio>
 #include <string>
+#include <memory>
 
 enum struct Attachment
 {
@@ -173,4 +174,45 @@ private:
 		glDeleteTextures(1, &fbo.colorHandle);
 		glDeleteTextures(1, &fbo.depthHandle);
 	}
+};
+
+struct FramebufferPool
+{
+	FramebufferPool() = delete;
+	FramebufferPool(FramebufferPool const &other) = delete;
+	FramebufferPool(FramebufferPool const &&other) = delete;
+	
+	inline FramebufferPool(size_t alloc, uint32_t width, uint32_t height)
+	{
+		this->pool.resize(alloc);
+		for(size_t i = 0; i < alloc; i++)
+		{
+			this->pool[i] = std::make_shared<Framebuffer>(width, height, std::initializer_list<Attachment>{Attachment::Color, Attachment::Alpha, Attachment::Depth}, "Pool " + std::to_string(i));
+		}
+	}
+	
+	inline std::shared_ptr<Framebuffer> getNextAvailableFBO(uint32_t width, uint32_t height)
+	{
+		std::shared_ptr<Framebuffer> out;
+		for(auto &fbo : this->pool)
+		{
+			if(fbo.use_count() == 1)
+			{
+				if(fbo->width != width || fbo->height != height)
+				{
+					fbo = std::make_shared<Framebuffer>(width, height, std::initializer_list<Attachment>{Attachment::Color, Attachment::Alpha, Attachment::Depth}, "Pool " + std::to_string(this->pool.size() + 1));
+				}
+				fbo->use();
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				return fbo;
+			}
+		}
+		this->pool.push_back(std::make_shared<Framebuffer>(width, height, std::initializer_list<Attachment>{Attachment::Color, Attachment::Alpha, Attachment::Depth}, "Pool " + std::to_string(this->pool.size() + 1)));
+		this->pool.back()->use();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		return this->pool.back();
+	}
+
+private:
+	std::vector<std::shared_ptr<Framebuffer>> pool;
 };
