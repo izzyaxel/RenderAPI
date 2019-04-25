@@ -212,6 +212,14 @@ struct FramebufferPool
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		return this->pool.back();
 	}
+	
+	inline void onResize(uint32_t width, uint32_t height)
+	{
+		for(auto const &fbo : this->pool)
+		{
+			fbo->regenerate(width, height);
+		}
+	}
 
 private:
 	std::vector<std::shared_ptr<Framebuffer>> pool;
