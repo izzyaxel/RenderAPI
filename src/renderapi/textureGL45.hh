@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 enum struct ColorFormat
 {
@@ -16,7 +17,7 @@ struct Texture
 {
 	Texture() = delete;
 	
-	inline Texture(uint8_t **data, uint32_t width, uint32_t height, ColorFormat colorFormat, bool sRGB = false)
+	inline Texture(uint8_t const **data, uint32_t width, uint32_t height, ColorFormat colorFormat, bool sRGB = false)
 	{
 		this->width = width;
 		this->height = height;

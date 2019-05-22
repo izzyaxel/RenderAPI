@@ -9,6 +9,10 @@ struct Shader
 {
 	Shader() = delete;
 	
+	inline Shader(std::vector<uint8_t> const &vertShader, std::vector<uint8_t> const &fragShader) : Shader(std::string{vertShader.begin(), vertShader.end()}, std::string{fragShader.begin(), fragShader.end()}) {}
+	
+	inline explicit Shader(std::vector<uint8_t> const &compShader) : Shader(std::string{compShader.begin(), compShader.end()}) {}
+	
 	inline Shader(std::string const &vertShader, std::string const &fragShader)
 	{
 		uint32_t vertHandle = glCreateShader(GL_VERTEX_SHADER), fragHandle = glCreateShader(GL_FRAGMENT_SHADER);
