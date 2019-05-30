@@ -17,14 +17,14 @@ struct Texture
 {
 	Texture() = delete;
 	
-	inline Texture(uint8_t const **data, uint32_t width, uint32_t height, ColorFormat colorFormat, bool sRGB = false)
+	inline Texture(uint8_t const **data, uint32_t width, uint32_t height, ColorFormat colorFormat, InterpMode mode = InterpMode::Linear, bool sRGB = false)
 	{
 		this->width = width;
 		this->height = height;
 		glCreateTextures(GL_TEXTURE_2D, 1, &this->handle);
 		glTextureStorage2D(this->handle, 1, sRGB ? (colorFormat == ColorFormat::RGB ? GL_SRGB8 : GL_SRGB8_ALPHA8) : (colorFormat == ColorFormat::RGB ? GL_RGB8 : GL_RGBA8), width, height);
 		for(uint32_t i = 0; i < this->height; i++) glTextureSubImage2D(this->handle, 0, 0, i, this->width, 1, colorFormat == ColorFormat::RGB ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, data[i]);
-		this->setInterpolation(InterpMode::Linear, InterpMode::Linear);
+		this->setInterpolation(mode, mode);
 		this->setAnisotropyLevel(1);
 	}
 	
